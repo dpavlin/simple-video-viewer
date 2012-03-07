@@ -185,10 +185,11 @@ static void process_image(unsigned char *p, int len)
 {
     if (n_ui.grab) {
 	    FILE *f;
-	    f = fopen("image.dat", "w");
+	    f = fopen("image.pnm", "w");
+		fprintf(f, "P6\n%d %d\n255\n", fmt.fmt.pix.width, fmt.fmt.pix.height);
 	    fwrite(p, 1, len, f);
 	    fclose(f);
-	    printf("image dumped to 'image.dat'\n");
+	    printf("image dumped to 'image.pnm'\n");
     }
 
     gui_update_function(p, len);
