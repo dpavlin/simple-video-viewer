@@ -118,8 +118,10 @@ void gui_gtk_init(int argc, char *argv[], int w, int h, int bpp)
 			   G_CALLBACK(gui_gtk_quit), NULL);
 	g_signal_connect(G_OBJECT(window), "destroy",
 			   G_CALLBACK(gui_gtk_quit), NULL);
+#if 0
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			   G_CALLBACK(gui_gtk_quit), NULL);
+#endif
 
 	gtk_container_set_border_width(GTK_CONTAINER(window), 2);
 
