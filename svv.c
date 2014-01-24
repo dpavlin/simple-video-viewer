@@ -113,6 +113,7 @@ void gui_gtk_init(int argc, char *argv[], int w, int h, int bpp)
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), PACKAGE_NAME);
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG); // floating in i3
 
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			   G_CALLBACK(gui_gtk_quit), NULL);
