@@ -28,6 +28,8 @@
 
 #ifdef HAVE_GTK
 #include <gtk/gtk.h>
+#include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 
 typedef struct __GuiGtk {
     GtkWidget   *drawing_area;
@@ -105,6 +107,8 @@ static void gui_gtk_quit(void)
     g_main_loop_quit (loop);
 }
 
+gboolean gui_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data);
+
 void gui_gtk_init(int argc, char *argv[], int w, int h, int bpp)
 {
 	GtkWidget *window;
@@ -119,10 +123,8 @@ void gui_gtk_init(int argc, char *argv[], int w, int h, int bpp)
 			   G_CALLBACK(gui_gtk_quit), NULL);
 	g_signal_connect(G_OBJECT(window), "destroy",
 			   G_CALLBACK(gui_gtk_quit), NULL);
-#if 0
 	g_signal_connect(G_OBJECT(window), "key_press_event",
-			   G_CALLBACK(gui_gtk_quit), NULL);
-#endif
+			   G_CALLBACK(gui_key_press), NULL);
 
 	gtk_container_set_border_width(GTK_CONTAINER(window), 2);
 
@@ -177,6 +179,19 @@ void gui_console_init(int argc, char *argv[], int w, int h, int bpp)
                     0xff0000, 0x00ff00, 0x0000ff, 0);
 }
 #endif
+
+gboolean gui_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
+{
+	switch (event->keyval) {
+		case GDK_q:
+			printf("# quit\n");
+			g_main_loop_quit (loop);
+			break;
+		default:
+			printf ("key_press 0x%02x %d\n", event->keyval, event->keyval);
+	}
+	return FALSE;
+}
 
 static void errno_exit(const char *s)
 {
@@ -668,6 +683,8 @@ static void usage(FILE * fp, int argc, char **argv)
 		"-m | --method      m Use memory mapped buffers (default)\n"
 		"                   r Use read() calls\n"
 		"                   u Use application allocated buffers\n"
+		"Keys:\n"
+		"q	quit"
 		"", argv[0]);
 }
 
