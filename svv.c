@@ -187,6 +187,11 @@ gboolean gui_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_dat
 			printf("# quit\n");
 			g_main_loop_quit (loop);
 			break;
+		case GDK_g:
+			printf("# grab\n");
+			n_ui.num_frames = 0;
+			n_ui.grab = 1;
+			break;
 		default:
 			printf ("key_press 0x%02x %d\n", event->keyval, event->keyval);
 	}
@@ -203,11 +208,13 @@ static void process_image(unsigned char *p, int len)
 {
     if (n_ui.grab) {
 	    FILE *f;
-	    f = fopen("image.pnm", "w");
+	    f = fopen("/dev/shm/image.pnm", "w");
 		fprintf(f, "P6\n%d %d\n255\n", fmt.fmt.pix.width, fmt.fmt.pix.height);
 	    fwrite(p, 1, len, f);
 	    fclose(f);
 	    printf("image dumped to 'image.pnm'\n");
+		//if (n_ui.num_frames == 0)
+		n_ui.grab = 0; // turn off grab triggered from ui
     }
 
     gui_update_function(p, len);
@@ -745,7 +752,7 @@ int main(int argc, char **argv)
 			}
 			break;
 		case 'g':
-            n_ui.grab = 1;
+			n_ui.grab = 1;
 			break;
         case 'u':
             if (strcmp(optarg, "none") == 0) {
